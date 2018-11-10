@@ -51,21 +51,38 @@ class ViewController: UIViewController, UIPageViewControllerDataSource {
         
     }
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        let itemController = viewController as! ItemViewController
-        if itemController.itemIndex > 0 {
-            return getItemController(itemController.itemIndex-1)
+        var index: Int = (viewController as! ItemViewController).itemIndex
+        if index == 0 || index == NSNotFound{
+            index = self.images.count
         }
-        return nil
+        index = index-1
+        return getItemController(index)
     }
+//        let itemController = viewController as! ItemViewController
+//        if itemController.itemIndex > 0 {
+//            return getItemController(itemController.itemIndex-1)
+//        }
+//        return nil
+//    }
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        let itemController = viewController as! ItemViewController
-        
-        if itemController.itemIndex+1 < images.count {
-            return getItemController(itemController.itemIndex+1)
+        var index: Int = (viewController as! ItemViewController).itemIndex
+        if index == NSNotFound{
+         return nil
         }
-        return nil
+        index = index+1
+        if index == self.images.count{
+         index = 0
+        }
+        return getItemController(index)
     }
+//        let itemController = viewController as! ItemViewController
+//
+//        if itemController.itemIndex+1 < images.count {
+//            return getItemController(itemController.itemIndex+1)
+//        }
+//        return nil
+//    }
     func presentationCount(for pageViewController: UIPageViewController) -> Int {
         return images.count
     }
