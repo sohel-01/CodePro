@@ -8,9 +8,10 @@
 
 import UIKit
 
-class ViewController: UIViewController, UIPageViewControllerDataSource {
-    
+class ViewController: UIViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
+    var currentIndex: Int?
     var pageViewController : UIPageViewController?
+    var pageControl: UIPageControl?
     
     let images = ["one","two","three","four","five","six","seven","eight","nine","ten"]
     
@@ -21,6 +22,19 @@ class ViewController: UIViewController, UIPageViewControllerDataSource {
         // Do any additional setup after loading the view, typically from a nib.
         createPageViewController()
         setupPageControl()
+        
+       let pageViewController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
+        pageViewController.delegate = self
+        pageViewController.dataSource = self
+        
+        currentIndex = 0
+        
+        
+        Timer.scheduledTimer(timeInterval: 2,
+                             target: self,
+                             selector: #selector(self.next(_:)),
+                             userInfo: nil,
+                             repeats: true)
     }
 
     override func didReceiveMemoryWarning() {
@@ -43,13 +57,7 @@ class ViewController: UIViewController, UIPageViewControllerDataSource {
         self.view.addSubview(pageViewController!.view)
         pageViewController?.didMove(toParentViewController: self)
     }
-    func setupPageControl(){
-        let appearance = UIPageControl.appearance()
-        appearance.pageIndicatorTintColor = UIColor.gray
-        appearance.currentPageIndicatorTintColor = UIColor.white
-        appearance.backgroundColor = UIColor.darkGray
-        
-    }
+    
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         var index: Int = (viewController as! ItemViewController).itemIndex
         if index == 0 || index == NSNotFound{
@@ -103,6 +111,15 @@ class ViewController: UIViewController, UIPageViewControllerDataSource {
 //        }
 //        return nil
 //    }
+    @objc func next(_ timer: Timer) {
+        pageViewController?.goToNextPage()
+        currentIndex = currentIndex! + 1
+        if currentIndex == pageControl?.numberOfPages{
+            currentIndex = 0
+        }
+        pageControl?.currentPage = currentIndex!
+        setupPageControl()
+    }
     
     func getItemController(_ itemIndex: Int) -> ItemViewController?{
         if itemIndex < images.count{
@@ -113,5 +130,21 @@ class ViewController: UIViewController, UIPageViewControllerDataSource {
         }
         return nil
     }
+    func setupPageControl(){
+        let appearance = UIPageControl.appearance()
+        appearance.pageIndicatorTintColor = UIColor.gray
+        appearance.currentPageIndicatorTintColor = UIColor.white
+        appearance.backgroundColor = UIColor.darkGray
+        
+    }
     
+}
+extension UIPageViewController {
+    func goToNextPage(animated: Bool = true, completion: ((Bool) -> Void)? = nil) {
+        if let currentViewController = viewControllers?[0] {
+            if let nextPage = dataSource?.pageViewController(self, viewControllerAfter: currentViewController) {
+                setViewControllers([nextPage], direction: .forward, animated: animated, completion: completion)
+            }
+        }
+}
 }
