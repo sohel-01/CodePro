@@ -9,9 +9,8 @@
 import UIKit
 
 class ViewController: UIViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
-    var currentIndex: Int?
     var pageViewController : UIPageViewController?
-    var pageControl: UIPageControl?
+    let pageControl =  UIPageControl.appearance()
     
     let images = ["one","two","three","four","five","six","seven","eight","nine","ten"]
     
@@ -22,19 +21,12 @@ class ViewController: UIViewController, UIPageViewControllerDataSource, UIPageVi
         // Do any additional setup after loading the view, typically from a nib.
         createPageViewController()
         setupPageControl()
-        
-       let pageViewController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
-        pageViewController.delegate = self
-        pageViewController.dataSource = self
-        
-        currentIndex = 0
-        
-        
         Timer.scheduledTimer(timeInterval: 2,
                              target: self,
                              selector: #selector(self.next(_:)),
                              userInfo: nil,
                              repeats: true)
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -49,9 +41,8 @@ class ViewController: UIViewController, UIPageViewControllerDataSource, UIPageVi
         if images.count > 0 {
             let firstController = getItemController(0)!
             let startingViewController = [firstController]
-            
             pageController.setViewControllers(startingViewController, direction: UIPageViewControllerNavigationDirection.forward, animated: false, completion: nil)
-        }
+            }
         pageViewController = pageController
         addChildViewController(pageViewController!)
         self.view.addSubview(pageViewController!.view)
@@ -66,12 +57,6 @@ class ViewController: UIViewController, UIPageViewControllerDataSource, UIPageVi
         index = index-1
         return getItemController(index)
     }
-//        let itemController = viewController as! ItemViewController
-//        if itemController.itemIndex > 0 {
-//            return getItemController(itemController.itemIndex-1)
-//        }
-//        return nil
-//    }
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
         var index: Int = (viewController as! ItemViewController).itemIndex
@@ -84,13 +69,6 @@ class ViewController: UIViewController, UIPageViewControllerDataSource, UIPageVi
         }
         return getItemController(index)
     }
-//        let itemController = viewController as! ItemViewController
-//
-//        if itemController.itemIndex+1 < images.count {
-//            return getItemController(itemController.itemIndex+1)
-//        }
-//        return nil
-//    }
     func presentationCount(for pageViewController: UIPageViewController) -> Int {
         return images.count
     }
@@ -98,27 +76,9 @@ class ViewController: UIViewController, UIPageViewControllerDataSource, UIPageVi
         return 0
     }
     
-    func currentControlIndex()-> Int {
-        let pageItemController = self.currentControlIndex()
-        if let controller = pageItemController as? ItemViewController{
-            return controller.itemIndex
-        }
-        return -1
-}
-//    func  currentController() -> UIViewController {
-//        if(self.pageViewController?.viewControllers?.count)! > 0 {
-//            return (self.pageViewController?.viewControllers![0])!
-//        }
-//        return nil
-//    }
     @objc func next(_ timer: Timer) {
         pageViewController?.goToNextPage()
-        currentIndex = currentIndex! + 1
-        if currentIndex == pageControl?.numberOfPages{
-            currentIndex = 0
-        }
-        pageControl?.currentPage = currentIndex!
-        setupPageControl()
+        
     }
     
     func getItemController(_ itemIndex: Int) -> ItemViewController?{
@@ -131,11 +91,10 @@ class ViewController: UIViewController, UIPageViewControllerDataSource, UIPageVi
         return nil
     }
     func setupPageControl(){
-        let appearance = UIPageControl.appearance()
-        appearance.pageIndicatorTintColor = UIColor.gray
-        appearance.currentPageIndicatorTintColor = UIColor.white
-        appearance.backgroundColor = UIColor.darkGray
-        
+        pageControl.pageIndicatorTintColor = UIColor.gray
+        pageControl.currentPageIndicatorTintColor = UIColor.white
+        pageControl.backgroundColor = UIColor.red
+
     }
     
 }
