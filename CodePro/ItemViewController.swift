@@ -2,7 +2,7 @@
 //  ItemViewController.swift
 //  CodePro
 //
-//  Created by MacStudent on 2018-11-08.
+//  Created by sohel on 2018-11-08.
 //  Copyright © 2018 MacStudent. All rights reserved.
 //
 
@@ -18,12 +18,6 @@ class ItemViewController: UIViewController {
             }
         }
     }
-    
-    
-    
-    
-    
-    
     
     @IBOutlet weak var uiImageView: UIImageView!
     
