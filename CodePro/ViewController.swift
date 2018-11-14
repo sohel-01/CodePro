@@ -13,19 +13,22 @@ class ViewController: UIViewController, UIPageViewControllerDataSource, UIPageVi
     let pageControl =  UIPageControl.appearance()
     
     let images = ["one","two","three","four","five","six","seven","eight","nine","ten"]
+    var timer = Timer()
     
-
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view, typically from a nib.
         createPageViewController()
         setupPageControl()
-        Timer.scheduledTimer(timeInterval: 2,
-                             target: self,
-                             selector: #selector(self.next(_:)),
-                             userInfo: nil,
-                             repeats: true)
+        let tap = UITapGestureRecognizer(target: self, action: #selector(singleTapped))
+        tap.numberOfTapsRequired = 1
+        view.addGestureRecognizer(tap)
+        let tap1 = UITapGestureRecognizer(target: self, action: #selector(doubleTapped))
+        tap1.numberOfTapsRequired = 2
+        view.addGestureRecognizer(tap1)
+        
+        timer = Timer.scheduledTimer(timeInterval: 3,target: self,selector: #selector(self.next(_:)),userInfo: nil,repeats: true)
         
     }
 
@@ -57,7 +60,13 @@ class ViewController: UIViewController, UIPageViewControllerDataSource, UIPageVi
         index = index-1
         return getItemController(index)
     }
-    
+    @objc func singleTapped() {
+        timer.invalidate()
+        
+    }
+    @objc func doubleTapped() {
+    Timer.scheduledTimer(timeInterval: 3,target: self,selector: #selector(self.next(_:)),userInfo: nil,repeats: true)
+    }
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
         var index: Int = (viewController as! ItemViewController).itemIndex
         if index == NSNotFound{
